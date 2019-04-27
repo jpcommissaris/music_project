@@ -13,11 +13,6 @@ class Scrapper:
         self.content = None
         self.table = []
 
-    def setTable(self, tag='//tr'):
-        self.set_tag(tag)
-        self.getHeader()
-        self.getRows()
-
     def getFrame(self):
         dic = {title: column for (title, column) in self.table}
         frame = pd.DataFrame(dic)
@@ -35,11 +30,18 @@ class Scrapper:
         self.content = lh.fromstring(page.content)
         self.row_data = self.content.xpath(tag)  # gets data inside a tag
 
-    def getRows(self):
 
+
+    # for best songs
+    def setTableB(self, tag='//tr'):
+        self.set_tag(tag)
+        self.getHeader()
+        self.getRowsB()
+
+    def getRowsB(self):
         # fills remaining rows
-        num = int(len(self.row_data)/2)
-        for r in range(1, num): #
+        num = int(len(self.row_data)-1)
+        for r in range(0, num): #
             T = self.row_data[r] # current row
             i = 0 # current column
             for t in T.iterchildren():
@@ -47,5 +49,19 @@ class Scrapper:
                 self.table[i][1].append(data)
                 i += 1
 
+    def setTableP(self):
+        self.set_tag("//article")
+        self.getHeader()
+        self.getRowsP()
 
 
+    def getRowsP(self):
+        # fills remaining rows
+        num = 45
+        for r in range(0, num): #
+            T = self.row_data[r] # current row
+            i = 0 # current column
+            for t in T.iterchildren():
+                data = t.text_content()
+                self.table[i][1].append(data)
+                i += 1
