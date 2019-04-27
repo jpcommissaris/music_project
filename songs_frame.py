@@ -7,20 +7,17 @@ songs_list = [("best", []), ("pop", []), ("rap", []), ("rock", [])]   # genre, a
 # loading in data
 def loadBest():
     global songs_list
-    for i in range(1970, 2017):
+    for year in range(1970, 2017):
         url = ' http://billboardtop100of.com/' + str(i)+ '-2/'
         tag = '//tr'
         s = Scrapper(url)
         s.setTable()
         df = s.getFrame()
-        print(i,"\n", df.head() ,"\n")
-        songs_list[0][1].append(df)
+        print(year,"\n", df.head() ,"\n")
+        songs_list[0][1].append((df))
 
 def loadPop():
     global songs_list
-
-
-
 
 
 # extract data
@@ -32,7 +29,3 @@ print("Final dataframe ",songs_list[0][1])
 with open("musics_frame.pickle", "wb") as f:
     pickle.dump(songs_list, f)  # puts linear into file f
 
-
-# read in model with pickle
-# pickle_in = open("studentmodel.pickle", "rb")
-# linear = pickle.load(pickle_in)
