@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/data_scrapper.iml" filepath="$PROJECT_DIR$/.idea/data_scrapper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/playlist_creator.iml" filepath="$PROJECT_DIR$/.idea/playlist_creator.iml" />
     </modules>
   </component>
 </project>

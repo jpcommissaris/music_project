@@ -7,7 +7,7 @@ songs_list = [("best", []), ("pop", []), ("rap", []), ("rock", [])]   # genre, a
 # loading in data
 def loadBest():
     global songs_list
-    for year in range(1970, 2017):
+    for year in range(1960, 2017):
         url = ' http://billboardtop100of.com/' + str(year)+ '-2/'
         tag = '//tr'
         s = Scrapper(url)

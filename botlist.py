@@ -19,19 +19,21 @@ class Playlist:
     def createPlaylist(self):
         for arg in self.args:
             genre = self.getGenre(arg[0])  # genre by number
-            year = arg[1]-1970
+            year = arg[1]-1960
             frame = self.table[genre][1][year]
             for index, row in frame.iterrows():
                 self.addSong(index+1, row[1], row[2], arg[2], arg[3])
 
     def printPlaylist(self):
-        random.shuffle(self.songs)
-        i=0
+        #random.shuffle(self.songs)
+        i=1
+        print("Your playlist: ")
         for song in self.songs:
+            print(song)
             if i % 5 == 0:
                 print("")
-            print(song)
             i+=1
+        print("\n")
 
     # helper methods
     def getGenre(self, g):
@@ -76,7 +78,6 @@ class Playlist:
     def checkDup(self, artist, song):
         for x in self.songs:
             if " - " + song + ",  by: " + artist in x:
-                print("dup")
                 return True
         return False
 
