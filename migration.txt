@@ -1,0 +1,43 @@
+-- ****************** SqlDBM: MySQL ******************;
+-- ***************************************************;
+
+
+-- ************************************** `Songs`
+
+CREATE TABLE Songs
+(
+ "id"     integer NOT NULL ,
+ "title"  text NOT NULL ,
+ "artist" text NOT NULL ,
+PRIMARY KEY ("id")
+);
+
+
+
+
+
+
+-- ************************************** `popularity`
+
+CREATE TABLE "Popularity"
+(
+ songId integer REFERENCES Songs(id),
+ year   integer NOT NULL ,
+ rank   integer NOT NULL ,
+PRIMARY KEY (songId, year)
+);
+
+
+
+
+fake data:
+
+{title: "testSong", artist: "bla", year: "2001", rank: "70"}
+{title: "testSong", artist: "bla", year: "2002", rank: "75"}
+{title: "testSong", artist: "bla", year: "2005", rank: "1"}
+{title: "testSong222", artist: "bla", year: "2006", rank: "23"}
+{title: "testSong222", artist: "bla", year: "2007", rank: "60"}
+
+
+INSERT INTO Songs
+    VALUES ('testSong', 'bla')
