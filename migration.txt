@@ -36,6 +36,10 @@ fake data:
 {title: "testSong222", artist: "bla", year: "2006", rank: "23"}
 {title: "testSong222", artist: "bla", year: "2007", rank: "60"}
 
-
+// songs table
 INSERT INTO songs(title, artist)
     VALUES ('testSong', 'testArtist');
+
+// popularity table
+INSERT INTO popularity(songID, year, rank)
+    VALUES ((SELECT id from songs WHERE title='testSong'), 2001, 70);
