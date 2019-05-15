@@ -4,12 +4,11 @@
 
 -- ************************************** `Songs`
 
-CREATE TABLE songs
-(
- "id"     integer NOT NULL ,
- "title"  text NOT NULL ,
- "artist" text NOT NULL ,
-PRIMARY KEY ("id")
+CREATE TABLE songs(
+    id     SERIAL NOT NULL ,
+    title  text NOT NULL ,
+    artist text NOT NULL ,
+    PRIMARY KEY ("id")
 );
 
 
@@ -19,25 +18,24 @@ PRIMARY KEY ("id")
 
 -- ************************************** `popularity`
 
-CREATE TABLE popularity
-(
- "songId" integer REFERENCES Songs("id"),
- "year"   integer NOT NULL ,
- "rank"   integer NOT NULL ,
-PRIMARY KEY ("songId", year")
+CREATE TABLE popularity(
+    songId integer REFERENCES Songs(id),
+    year   integer NOT NULL ,
+    rank   integer NOT NULL ,
+    PRIMARY KEY (songId, year)
 );
 
-
+//TODO: review difference between ", ', or neither
 
 
 fake data:
 
-{title: "testSong", artist: "bla", year: "2001", rank: "70"}
-{title: "testSong", artist: "bla", year: "2002", rank: "75"}
-{title: "testSong", artist: "bla", year: "2005", rank: "1"}
+{title: "testSong", artist: "testArtist", year: "2001", rank: "70"}
+{title: "testSong", artist: "testArtist", year: "2002", rank: "75"}
+{title: "testSong", artist: "testArtist", year: "2005", rank: "1"}
 {title: "testSong222", artist: "bla", year: "2006", rank: "23"}
 {title: "testSong222", artist: "bla", year: "2007", rank: "60"}
 
 
-INSERT INTO Songs
-    VALUES ('testSong', 'bla')
+INSERT INTO songs(title, artist)
+    VALUES ('testSong', 'testArtist');
