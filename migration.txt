@@ -4,7 +4,7 @@
 
 -- ************************************** `Songs`
 
-CREATE TABLE Songs
+CREATE TABLE songs
 (
  "id"     integer NOT NULL ,
  "title"  text NOT NULL ,
@@ -19,12 +19,12 @@ PRIMARY KEY ("id")
 
 -- ************************************** `popularity`
 
-CREATE TABLE "Popularity"
+CREATE TABLE popularity
 (
- songId integer REFERENCES Songs(id),
- year   integer NOT NULL ,
- rank   integer NOT NULL ,
-PRIMARY KEY (songId, year)
+ "songId" integer REFERENCES Songs("id"),
+ "year"   integer NOT NULL ,
+ "rank"   integer NOT NULL ,
+PRIMARY KEY ("songId", year")
 );
 
 
