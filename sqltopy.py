@@ -23,16 +23,16 @@ def connect():
             print('Database connection closed.')
 
 # heres where we can put SQL commands inside a cursor object
-# execute('sequel code') executes the code, fetchone() gets the result
+# Documentation for Cursor class:   http://initd.org/psycopg/docs/cursor.html
 def execute(conn):
 
     cur = conn.cursor()
+
     # tester: get db version
     print('PostgreSQL database version:')
     cur.execute('SELECT version()')
     version = cur.fetchone()
     print(version)
-
 
     cur.close()
 
