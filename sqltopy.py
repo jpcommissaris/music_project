@@ -1,17 +1,17 @@
 # goal of this file is to connect any database to python and be able to use it
+# USAGE: change the CONST parameters in connect to match your database, Use the execute function to execute sql code
 import psycopg2
 
 # establish the connection
 def connect():
     """ Connect to the PostgreSQL database server """
-    host = "127.0.0.1"
-    db = "template1"
-    user = "JulianC"
-    port = 5432
+    HOST = "127.0.0.1"
+    DB = "template1"
+    USER = "JulianC"
     conn = None
     try:
         print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(host=host, database=db, user=user)
+        conn = psycopg2.connect(host=HOST, database=DB, user=USER)
         print("connection successful\n")
         execute(conn)
 
