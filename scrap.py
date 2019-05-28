@@ -4,7 +4,6 @@ import pandas as pd
 
 
 class Scrapper:
-
     def __init__(self, url):
         # parameters
         self.url = url
@@ -38,6 +37,24 @@ class Scrapper:
         self.getHeader()
         self.getRowsB()
 
+    def get_rows_SQL(self, tag='//tr'):
+        self.set_tag(tag)
+        self.getTable()
+
+    def getTable(self):
+        # fills remaining rows
+        num = int(len(self.row_data)-1)
+        for r in range(0, num): #
+            arg = []
+            T = self.row_data[r] # current row
+            i = 0 # current column
+            for t in T.iterchildren():
+                data = t.text_content()
+                arg.append(data)
+            s = Song(arg[0], arg[1], arg[2])
+            self.table.append(s)
+
+
     def getRowsB(self):
         # fills remaining rows
         num = int(len(self.row_data)-1)
@@ -53,8 +70,6 @@ class Scrapper:
         self.set_tag("//article")
         self.getHeader()
         self.getRowsP()
-
-
     def getRowsP(self):
         # fills remaining rows
         num = 45
@@ -65,3 +80,15 @@ class Scrapper:
                 data = t.text_content()
                 self.table[i][1].append(data)
                 i += 1
+
+class Song:
+
+    def __init__(self, rank, song, artist):
+        self.rank = rank
+        self.song = song
+        self.artist = artist
+
+    def __str__(self):
+        return f'Rank: {self.rank}, artist: {self.artist}, Song: {self.song}'
+
+
