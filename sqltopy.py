@@ -16,7 +16,8 @@ def connect():
         print("connection successful\n")
         # ---> here is where functions can go to update the database --->
         #execute(conn)
-        dirtyDump(conn)
+        #dirtyDump(conn)
+        dumpV2(conn)
         # end changes and commit <---
         conn.commit()
         print("changes committed")
@@ -60,6 +61,26 @@ def dirtyDump(conn):
 
         print(year)
     cur.close()
+
+def dumpV2(conn):
+    cur = conn.cursor()
+    table_name = "songs"
+    cur.execute("DROP TABLE IF EXISTS " + table_name + ";") # can get rid of once preventing duplicates works
+    table_commands = "(id SERIAL NOT NULL, title text NOT NULL, artist text NOT NULL ,PRIMARY KEY (id), UNIQUE(title, artist));"
+    cur.execute("CREATE TABLE " + table_name + table_commands)
+    # add loop here
+    for year in range(2005,2010):
+        url = 'http://billboardtop100of.com/' + str(year) + '-2/'
+        s = Scrapper(url)
+        s.get_rows_SQL()
+        for song in s.table:
+            inserts = "INSERT INTO " + table_name + "(title, artist)"
+            values = "VALUES(" "'" + song.song + "', " + "'" + song.artist + "'" + ")"
+            cur.execute(inserts + values + " ON CONFLICT(title, artist) DO NOTHING;")
+            # print(inserts, "\n", values)
+        print(year)
+    cur.close()
+
 
 # run
 if __name__ == '__main__':
