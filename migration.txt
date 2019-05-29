@@ -1,0 +1,89 @@
+-- ****************** SqlDBM: MySQL ******************;
+-- ***************************************************;
+
+
+-- ************************************** `Songs`
+
+CREATE TABLE songs(
+    id     SERIAL NOT NULL ,
+    title  text NOT NULL ,
+    artist text NOT NULL ,
+    PRIMARY KEY (id),
+    UNIQUE(title, artist)
+);
+
+
+
+
+
+
+-- ************************************** `popularity`
+
+CREATE TABLE popularity(
+    songId integer REFERENCES Songs(id),
+    year   integer NOT NULL ,
+    rank   integer NOT NULL ,
+    PRIMARY KEY (songId, year),
+    UNIQUE(songId, year),
+    UNIQUE(year, rank)
+);
+
+//TODO: review difference between ", ', or neither
+
+
+fake data:
+
+{title: "testSong", artist: "testArtist", year: "2001", rank: "70"}
+{title: "testSong", artist: "testArtist", year: "2002", rank: "75"}
+{title: "testSong", artist: "testArtist", year: "2005", rank: "1"}
+{title: "testSong222", artist: "bla", year: "2006", rank: "23"}
+{title: "testSong222", artist: "bla", year: "2007", rank: "60"}
+
+
+//////////////////////////////////////////////////////////////////
+// songs table
+// first song test insert
+INSERT INTO songs(title, artist)
+    VALUES ('testSong', 'testArtist');
+
+// Duplicate song/artist insert test, should give error
+INSERT INTO songs(title, artist)
+    VALUES ('testSong', 'testArtist');
+
+// unique song, duplicate artist test, should work fine
+INSERT INTO songs(title, artist)
+    VALUES ('testSong2', 'testArtist');
+
+// duplicate song, duplicate artist test, should give error
+INSERT INTO songs(title, artist)
+    VALUES ('testSong2', 'testArtist');
+
+// duplicate song, unique artist test, should work fine
+INSERT INTO songs(title, artist)
+    VALUES ('testSong', 'testArtist2');
+
+////////////////////////////////////////////////////////////////
+// popularity table
+// first rank/year test insert, should work
+INSERT INTO popularity(songId, year, rank)
+    VALUES ((SELECT id from songs WHERE title='testSong' AND artist='testArtist'), 2001, 70);
+
+// duplicate song/artist/rank/year, should fail
+INSERT INTO popularity(songId, year, rank)
+    VALUES ((SELECT id from songs WHERE title='testSong' AND artist='testArtist'), 2001, 70);
+
+// duplicate song/artist, unique year/rank, should work
+INSERT INTO popularity(songId, year, rank)
+    VALUES ((SELECT id from songs WHERE title='testSong' AND artist='testArtist'), 2002, 75);
+
+// uniqe song/rank, duplicate artist/year, should work
+INSERT INTO popularity(songId, year, rank)
+    VALUES ((SELECT id from songs WHERE title='testSong2' AND artist='testArtist'), 2001, 72);
+
+// duplicate song/year, unique artist/rank, should work
+INSERT INTO popularity(songId, year, rank)
+    VALUES ((SELECT id from songs WHERE title='testSong' AND artist='testArtist2'), 2001, 4);
+
+// unique song/artist, duplicate year/rank, should fail
+INSERT INTO popularity(songId, year, rank)
+    VALUES ((SELECT id from songs WHERE title='testSong' AND artist='testArtist2'), 2001, 4);
