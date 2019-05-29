@@ -58,8 +58,9 @@ def dumpV3(conn):
     for year in range(2005, 2010):
         # -- load data --
         url = 'http://billboardtop100of.com/' + str(year) + '-2/'
-        s = Scrapper(url)
-        s.get_rows_SQL()
+        s = Scrapper(url) # loads object
+        s.get_rows_SQL() # puts songs into s.table, type: array
+        # loop through songs
         for song in s.table:
             # -- insert into songs table --
             inserts = "INSERT INTO songs(title, artist)"
@@ -86,6 +87,7 @@ def info(conn):
     cur.close()
     print("All Info printed")
 
-# run
+
+# run script
 if __name__ == '__main__':
     connect()
