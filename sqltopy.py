@@ -14,7 +14,7 @@ def connect(db="music", user="JuliaC", host="127.0.0.1", port=5432):
         print("connection successful\n")
 
         # ---> here is where functions can go to update or scan the database
-        # dumpV3(conn)
+        dumpV3(conn)
         info(conn)
         # ---> end
 
@@ -25,6 +25,7 @@ def connect(db="music", user="JuliaC", host="127.0.0.1", port=5432):
             conn.close()
             print('Database connection closed.')
 
+
 # heres where we can put SQL commands inside a cursor object
 # Documentation for Cursor class:   http://initd.org/psycopg/docs/cursor.html
 # psql commands:  http://www.postgresqltutorial.com/psql-commands/
@@ -34,7 +35,6 @@ def execute(conn):
     cur.execute("CREATE TABLE " + "IF NOT EXISTS " + "sample_table " + "(song VARCHAR);")
     cur.execute("INSERT INTO " + "sample_table" + "(song)" + "VALUES('hello');")
     cur.close()
-
 
 
 def dumpV3(conn):
@@ -74,24 +74,26 @@ def dumpV3(conn):
     conn.commit()
     print("changes committed")
 
+
 def info(conn):
     cur = conn.cursor()
     # -- run executes to gain info --
     print("Running information methods: ")
-    # cur.execute("select * from popularity ORDER BY songid, year ASC;")
-    cur.execute("select * from popularity ORDER BY rank, songid ASC;")
+
+    # ---> here is where executes go
+    cur.execute("select * from popularity ORDER BY songid, year ASC;")
+    # cur.execute("select * from popularity ORDER BY rank, songid ASC;")
+    # ---> end
+
+    # -- iterate and print --
     for song in cur:
         print(song) # cur object is iterable
     cur.close()
     print("All Info printed")
 
 
-def main():
-    connect(db="music", user="JulianC")  # must set parameters if not using defaults
-
-
-# run script
+# run script, must set parameters if not using defaults
 if __name__ == '__main__':
-    main()
+    connect(db="music", user="JulianC")
 
 
