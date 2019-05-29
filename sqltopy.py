@@ -14,13 +14,11 @@ def connect():
         print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(host=HOST, database=DB, user=USER)
         print("connection successful\n")
-        # ---> here is where functions can go to update the database --->
-        #execute(conn)
-        #dirtyDump(conn)
-        dumpV2(conn)
-        # end changes and commit <---
-        conn.commit()
-        print("changes committed")
+
+        # ---> here is where functions can go to update or scan the database
+        # dumpV3(conn)
+        info(conn)
+        # ---> end
 
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error: ", error)
@@ -33,54 +31,60 @@ def connect():
 # Documentation for Cursor class:   http://initd.org/psycopg/docs/cursor.html
 # psql commands:  http://www.postgresqltutorial.com/psql-commands/
 def execute(conn):
-
+    # tester code, does nothing for project
     cur = conn.cursor()
-
-    # tester: get db version
-    print('PostgreSQL database version:')
     cur.execute("CREATE TABLE " + "IF NOT EXISTS " + "sample_table " + "(song VARCHAR);")
     cur.execute("INSERT INTO " + "sample_table" + "(song)" + "VALUES('hello');")
-
     cur.close()
 
 
-def dirtyDump(conn):
-    cur = conn.cursor()
-    for year in range(1970, 2010):
-        table_name = "t"+str(year)
-        cur.execute("DROP TABLE IF EXISTS " + table_name + ";")
-        cur.execute("CREATE TABLE " + table_name + "(song VARCHAR, artist VARCHAR, rank INT);")
-        url = 'http://billboardtop100of.com/' + str(year) + '-2/'
-        s = Scrapper(url)
-        s.get_rows_SQL()
-        for song in s.table:
-            inserts = "INSERT INTO " + table_name + "(song, artist, rank)"
-            values = "VALUES(" + "'" + song.song + "', " + "'" + song.artist + "', " + "'" + song.rank + "'" + ");"
-            cur.execute(inserts + values)
-            #print(inserts, "\n", values)
 
-        print(year)
-    cur.close()
-
-def dumpV2(conn):
+def dumpV3(conn):
     cur = conn.cursor()
-    table_name = "songs"
-    cur.execute("DROP TABLE IF EXISTS " + table_name + ";") # can get rid of once preventing duplicates works
+    # --- drop table ---
+    cur.execute("DROP TABLE IF EXISTS popularity;")
+    cur.execute("DROP TABLE IF EXISTS songs;")
+    print("--> Cleared tables")
+
+    # --- create tables ---
     table_commands = "(id SERIAL NOT NULL, title text NOT NULL, artist text NOT NULL ,PRIMARY KEY (id), UNIQUE(title, artist));"
-    cur.execute("CREATE TABLE " + table_name + table_commands)
-    # add loop here
-    for year in range(2005,2010):
+    cur.execute("CREATE TABLE songs" + table_commands)
+    print("--> Created songs table")
+    table_commands = "(songId integer REFERENCES Songs(id),year integer NOT NULL, rank integer NOT NULL, PRIMARY KEY (songId, year), UNIQUE(songId, year), UNIQUE(year, rank));"
+    cur.execute("CREATE TABLE popularity" + table_commands)
+    print("--> Created popularity table")
+
+    # --- top100 years data ---
+    for year in range(2005, 2010):
+        # -- load data --
         url = 'http://billboardtop100of.com/' + str(year) + '-2/'
         s = Scrapper(url)
         s.get_rows_SQL()
         for song in s.table:
-            inserts = "INSERT INTO " + table_name + "(title, artist)"
+            # -- insert into songs table --
+            inserts = "INSERT INTO songs(title, artist)"
             values = "VALUES(" "'" + song.song + "', " + "'" + song.artist + "'" + ")"
             cur.execute(inserts + values + " ON CONFLICT(title, artist) DO NOTHING;")
-            # print(inserts, "\n", values)
-        print(year)
+            # -- insert into popularity table --
+            inserts = "INSERT INTO popularity(songID, year, rank)"
+            values = "((SELECT id from songs WHERE title = '%s' AND artist = '%s'), %s, %s )"\
+                     % (song.song, song.artist, str(year), song.rank)
+            cur.execute(inserts + "Values" + values + " ON CONFLICT DO NOTHING;")
+        print("Added top100 songs for year ", year)
     cur.close()
+    conn.commit()
+    print("changes committed")
 
+def info(conn):
+    cur = conn.cursor()
+    # -- run executes to gain info --
+    print("Running information methods: ")
+    # cur.execute("select * from popularity ORDER BY songid, year ASC;")
+    cur.execute("select * from popularity ORDER BY rank, songid ASC;")
+    for song in cur:
+        print(song) # cur object is iterable
+    cur.close()
+    print("All Info printed")
 
 # run
 if __name__ == '__main__':
