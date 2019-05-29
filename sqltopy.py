@@ -3,16 +3,14 @@
 import psycopg2
 from scrap import Scrapper
 
+
 # establish the connection
-def connect():
+def connect(db="music", user="JuliaC", host="127.0.0.1", port=5432):
     """ Connect to the PostgreSQL database server """
-    HOST = "127.0.0.1"
-    DB = "music"
-    USER = "JulianC"
     conn = None
     try:
         print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(host=HOST, database=DB, user=USER)
+        conn = psycopg2.connect(host=host, database=db, user=user, port=port)
         print("connection successful\n")
 
         # ---> here is where functions can go to update or scan the database
@@ -88,6 +86,12 @@ def info(conn):
     print("All Info printed")
 
 
+def main():
+    connect(db="music", user="JulianC")  # must set parameters if not using defaults
+
+
 # run script
 if __name__ == '__main__':
-    connect()
+    main()
+
+
