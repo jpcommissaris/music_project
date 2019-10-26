@@ -1,4 +1,4 @@
-# data_scrapper
+# Music Project
 
 - Simple program that takes hit music data from billboards.com and uses that to create playlists of popular song choices 
 - Need python 3.0 and a package installer (pip)

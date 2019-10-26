@@ -1,3 +1,4 @@
+"""Creates a playlist from songs"""
 import pickle
 import pandas
 import random
@@ -12,18 +13,18 @@ class Playlist:
         self.args = []
         self.songs = []
 
-    def addArg(self, genre, year, weight=1.0, slice=1, artists=[]):
+    def addArg(self, year, weight=1.0, slice=1, artists=[]):
             for x in range(0,slice):
-                self.args.append((genre, year+x, weight*(1/slice), artists))
+                self.args.append((year+x, weight*(1/slice), artists))
 
     def createPlaylist(self):
         for arg in self.args:
-            genre = self.getGenre(arg[0])  # genre by number
-            year = arg[1]-1960
-            frame = self.table[genre][1][year]
+            year = int(arg[0]-1960)
+            frame = self.table[year]
             for index, row in frame.iterrows():
-                self.addSong(index+1, row[1], row[2], arg[2], arg[3])
+                self.addSong(index+1, row[1], row[2], arg[1], arg[2])
 
+    # -- prints the final playlist to the console --
     def printPlaylist(self):
         #random.shuffle(self.songs)
         i=1
@@ -35,17 +36,8 @@ class Playlist:
             i+=1
         print("\n")
 
-    # helper methods
-    def getGenre(self, g):
-        if g == "best":
-            return 0
-        elif g == "pop":
-            return 1
-        elif g == "rap":
-            return 2
-        elif g == "rock":
-            return 3
 
+    # -- adds a song to the playlist --
     def addSong(self, rank, artist, song, weight, artists):
         chance = int(self.prob(rank, artist, weight, artists))
         rand = random.randint(0,99)
@@ -56,7 +48,9 @@ class Playlist:
         if chance > rand and not dup:
             self.songs.append(" - " + song + ",  by: " + artist + " " + top5 )
 
+    # -- calculates the odds a song will appear in a playlist --
     def prob(self, rank, a, w, artists):
+        w = w/4
         for people in artists:
             if people in a:
                 return 100
@@ -75,6 +69,7 @@ class Playlist:
                 return 15 * w
         return 0
 
+    # -- ensures no playlist has duplicate songs --
     def checkDup(self, artist, song):
         for x in self.songs:
             if " - " + song + ",  by: " + artist in x:
@@ -82,13 +77,6 @@ class Playlist:
         return False
 
 
-# test
-'''b = Playlist()
-b.addArg("best", 2005, weight=.5)
-b.addArg("best", 2006, weight=.5)
-b.addArg("best", 2007, weight=.5)
-b.createPlaylist()
-b.printPlaylist()'''
 
 
 

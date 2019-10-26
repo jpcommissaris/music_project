@@ -2,7 +2,7 @@ import requests
 import lxml.html as lh
 import pandas as pd
 
-
+# this class gets the data off billboards top100
 class Scrapper:
     def __init__(self, url):
         # parameters
@@ -12,6 +12,7 @@ class Scrapper:
         self.content = None
         self.table = []
 
+    # -- returns the scrapped data as a Pandas DataFrame
     def getFrame(self):
         dic = {title: column for (title, column) in self.table}
         frame = pd.DataFrame(dic)
@@ -29,9 +30,6 @@ class Scrapper:
         self.content = lh.fromstring(page.content)
         self.row_data = self.content.xpath(tag)  # gets data inside a tag
 
-
-
-    # for best songs
     def setTableB(self, tag='//tr'):
         self.set_tag(tag)
         self.getHeader()
@@ -66,21 +64,7 @@ class Scrapper:
                 self.table[i][1].append(data)
                 i += 1
 
-    def setTableP(self):
-        self.set_tag("//article")
-        self.getHeader()
-        self.getRowsP()
-    def getRowsP(self):
-        # fills remaining rows
-        num = 45
-        for r in range(0, num): #
-            T = self.row_data[r] # current row
-            i = 0 # current column
-            for t in T.iterchildren():
-                data = t.text_content()
-                self.table[i][1].append(data)
-                i += 1
-
+# -- object that holds song info --
 class Song:
 
     def __init__(self, rank, song, artist):
@@ -88,6 +72,7 @@ class Song:
         self.song = song
         self.artist = artist
 
+    # -- override toString --
     def __str__(self):
         return f'Rank: {self.rank}, artist: {self.artist}, Song: {self.song}'
 
